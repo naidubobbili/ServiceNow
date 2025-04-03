@@ -1,0 +1,189 @@
+ATF Introduction
+_____________________________________________________________________________________________________________
+
+Functional business logic testing
+
+ATF was designed to target functional business logic testing. 
+It verifies a process is fit for its intended purpose and meets its defined acceptance criteria. 
+ATF can provide functional testing across the Now Platform. 
+It supports delivered applications, all scoped applications, Service Portal, custom tables, and custom forms. 
+Testing can be performed on the user interface or directly against instance data on the server.
+______________________________________________________________________________________________________________
+
+Regression testing
+
+ATF is great for regression testing. 
+Create comprehensive testing plans to ensure existing processes still work as expected following an upgrade or 
+development cycle. Run the same comprehensive testing plan before and after major changes to get a baseline. 
+ATF provides assurance that the same tests will run in the same manner, allowing routine instance checks to be 
+performed whenever necessary.
+_______________________________________________________________________________________________________________
+
+Browser compatibility testing
+
+ATF also targets compatibility testing across multiple browsers and operating systems. 
+Write an ATF test once, and then verify the same functionality works as expected for all supported environments.
+________________________________________________________________________________________________________________
+
+Server-side Jasmine testing
+
+ATF can be integrated with Jasmine, an open source testing framework for JavaScript. 
+Jasmine tests are called to verify server-side functionality from the steps of an ATF test.
+________________________________________________________________________________________________________________
+
+ATF is not designed to cover User Acceptance Testing (UAT) for sign-off approval
+_________________________________________________________________________________________________________________
+
+
+Test Designer
+
+The Test Designer is the most common ATF role on a ServiceNow project. 
+Any team member assigned the Test Designer role can create and run tests and test suites. 
+Most application developers are assigned the role since ATF tests should be created for all important customizations. 
+
+Although coding skills are not mandatory, debugging tests takes an advanced level of ServiceNow and ATF knowledge.
+
+Test Designers can perform the following capabilities:
+
+Create, edit, and delete tests suites
+Create, edit, and delete tests
+Add test steps to tests using existing test step configurations (new test step configurations can only be created by a Test Administrator)
+Run tests and test suites
+View test results
+View ATF system properties
+
+Coding skills required: Low-code or No-code
+__________________________________________________________________________________________________________________
+
+Test Administrator
+
+Test Administrators ensure ATF system properties are set appropriately to control how the ATF environment operates within an instance.
+Administrators also define retention policies to determine how long testing results should be kept.
+
+A large percentage of the time required by Test Administrators involves creating new test step configurations.
+Once created, test step configurations can be reused by any ATF role. 
+The more new test step configurations required by the project, the more impact there will be on the Test Administrator. 
+
+Since new test step configurations are created using script, Test Administrators should have advanced coding experience.
+Due to their experience, they are often pulled in to help Test Designers debug failing tests or create new ones.
+
+Test Administrators can perform all the capabilities of a Test Designer, plus the following:
+
+Edit ATF system properties
+Create test step configurations
+
+Coding skills required: Pro-code
+
+__________________________________________________________________________________________________________________________
+
+
+Web Service Testers
+
+Web Service Testers build web service tests. The role provides access to the web service modules required to facilitate test development. 
+Typically, web service tests make use of REST integration. However, technologies like SOAP can be used through scripting. 
+The number of Web Service Testers required is dependent on the amount of web service integration customization implemented. 
+
+Since web service integrations might require the use of script, Web Service Testers should have advanced coding experience. 
+Due to their experience, they are often pulled in to help Test Designers debug failing tests or create new ones.
+
+Web Service Testers can perform all the capabilities of a Test Designer, plus the following:
+
+Build web service tests
+
+Coding skills required: Pro-code
+_________________________________________________________________________________________________________________________________
+
+Steps
+
+1. Identify essential functionality per process / application
+2. Create tests to validate essential functions
+3. Package Tests into Suites
+4. Run or Schedule test execution
+5. Monitor and fix issues
+____________________________________________________________________________________________________________________________________
+
+The ATF framework is not meant to run in ServiceNow production instance environments. 
+ATF tests and test suites should only be run in non-production instances. 
+Verifying production instances typically involves User Acceptance Testing (UAT) performed by stakeholders. 
+
+_____________________________________________________________________________________________________________________________________
+
+The ATF system property to enable tests and test suites to run is defaulted off for all ServiceNow instances.
+
+some of the important reasons ATF is prevented from running on their production instance include:
+
+1.Running ATF tests slows down instance performance.
+
+2.Changes made within an ATF test would be visible to users before the rollback.
+
+3.Actionable events, such as email notifications to customers or approvals to managers, would be triggered from data changed by ATF tests.
+
+4.Sensitive production data could be seen when impersonating a user.
+
+5.Audit history of data changes would remain even after data rollback.
+
+__________________________________________________________________________________________________________________________________________
+
+Although ATF is not run in a production environment, ATF development objects are still promoted into the production instance. 
+This ensures they will be included when the production instance is cloned down to the development or test instances.
+___________________________________________________________________________________________________________________________________________
+
+Test
+A set of ordered actions or assertions, whose changes rollback after a run
+
+Test step
+A single action or assertion with configured input values
+
+Test suite
+A set of tests and test suites that can be scheduled or run on-demand
+
+Test step configuration
+Definition of the behavior and characteristics for a type of action or assertion
+
+Client test runner
+Simulates UI actions or assertions within a separate browser window when a test is run
+______________________________________________________________________________________________________________________________________________
+
+Identify ATF development impacts
+
+|SIGNIFICANT FACTOR
+|
+|Level of test detail
+|Quality of existing development
+|Number of client-side tests
+|Uniqueness of each test
+_______________________________
+
+|NOT A SIGNIFICANT FACTOR
+|
+|Number of test steps
+|Number of test cases
+
+___________________________________________________________________________________________________________________________________________________
+
+Accelerate development with quick start tests
+
+quick start tests:
+
+1.Represent a small set of critical use cases
+ 
+2.Install easily with the demo data of a ServiceNow application
+
+3.Can be used as templates to build and customize test and test suites matching your unique processes
+
+4.Run against your instance specific data once copied and configured
+
+5.Annotate your copy of the test if ServiceNow ever changes the original
+____________________________________________________________________________________________________________________________________________________
+
+quick start tests are inactive, read-only templates. 
+They only produce a pass result when run with the demo data provided by their corresponding ServiceNow plugin. 
+To allow quick start tests to run successfully against your instance data, you must first create a copy of the quick start test. 
+Once the quick start test is copied, you can apply any desired changes and run the test. 
+_____________________________________________________________________________________________________________________________________________________
+
+
+
+
+
+
