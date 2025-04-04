@@ -1,0 +1,178 @@
+Perform tests in parallel
+
+Individual tests initiated manually are run in parallel. 
+However, tests that are scheduled or run within a test suite do not run in parallel. 
+They run one after another sequentially. 
+Running individual tests in parallel can save time for Test Designers creating and 
+debugging different tests simultaneously. 
+
+In order for tests to run in parallel safely, they must be run at least once. 
+This detects and stores a list of all records modified by the test. 
+The list is used by ATF to prevent other tests modifying the same records from running at the same time. 
+The list of records modified by each test is regenerated after every run.
+______________________________________________________________________________________________________________
+
+Note
+
+Running ATF tests in parallel is NOT possible using a ServiceNow Developer Portal personal instance 
+due to predefined instance configurations that cannot be adjusted. 
+
+Other typical ServiceNow customer instances are able to run ATF tests in parallel. 
+If you are not able to run ATF tests in parallel on your customer instance, 
+your system administrator should contact ServiceNow customer support to review the instance configuration.
+_______________________________________________________________________________________________________________
+
+Monitor test runs
+
+"Automated Test Framework > Run > Waiting/Running Test Runs"
+
+Cancel pending tests
+
+To cancel the waiting test from the list, let select its check box and deletes it using Actions on selected rows.
+_________________________________________________________________________________________________________________
+
+Know the rollback
+
+When a test completes, the instance changes it makes are rolled back. 
+This includes any new records being deleted and deleted records being restored. 
+However, the rollback is not actually a true instance rollback. 
+Instead, it works by tracking updates made by the impersonated user of the test. 
+When the test completes, those user changes rollback.
+____________________________________________________________________________________________________________________
+
+Tables excluded from rollback by ServiceNow
+
+Any records modified in the following tables are excluded from the rollback following a test run.
+Emails and reports are typically excluded, so their content and styling can be checked manually.
+
+History [sys_history_line]
+ECC Queue [ecc_queue]
+Email [sys_email]
+Email Log [sys_email_log]
+Report Execution [report_executions]
+Report Stats [report_stats]
+or any table extending these tables
+_________________________________________________________________________________________________________________________
+
+Tables excluded from rollback by you
+
+Additional tables can be excluded from the rollback after a test run by adding an "excludedFromRollback=true Attribute" 
+to their Collection record in "System Definition > Dictionary".
+__________________________________________________________________________________________________________________________
+
+Asynchronous data changes
+
+Some asynchronous changes are not always finished in time to be included within the rollback following a test run. 
+This would include things like event processing, email notifications, and workflow updates.
+Do not rely on the rollback of asynchronous changes to complete before the next test is run.
+_____________________________________________________________________________________________________________________________
+
+Run on client or server
+
+Some test steps must be performed on the client user interface. 
+These test steps simulate user interactions, such as opening a form. 
+Other test steps must be performed on the server against the instance. 
+These include impersonating users, submitting or saving records, running server-side script, or making REST calls.
+
+If a test includes test steps performed on the client user interface, 
+when the test is run ATF opens a client test runner within a separate browser window to execute the actions. 
+Client test runners can be run across different browsers to facilitate compatibility testing. 
+________________________________________________________________________________________________________________________________
+
+Tip
+
+If you need to make instance updates while tests are running, 
+there is a way to keep the two from impacting each other in the same browser session.
+Just use a different browser application to perform the updates, such as Firefox if tests are running in Chrome. 
+Another option is to make the updates using the "incognito" feature of many browsers. 
+Open the Chrome browser menu, then select New Incognito Window.
+_________________________________________________________________________________________________________________________________
+
+When viewing the list of waiting and running test suites, 
+keep in mind multiple test suites can run at the same time.
+However, the tests included in any of the test suites still only run one at a time.
+Therefore, if a parent test suite is run, its child test suites also appear in the list as running. 
+__________________________________________________________________________________________________________________
+
+Sometimes when trying to run a test or test suite, 
+is surprised to see the Run Test or Run Test Suite button does not appear. 
+It happens even when if knows ATF has been enabled on the instance.
+Then look in the upper-right of the ServiceNow banner and sees what is wrong. 
+Tests and test suites cannot be run while manually impersonating another user.
+___________________________________________________________________________________________________________________
+
+"After a failed test suite run, there might be some test adjustments to make. 
+Once you complete the changes, rather than run the entire test suite again, 
+just open its test suite results and select Re-run Failed Tests. 
+Only the tests that were not included in the last run will execute.
+It can save a lot of time, especially if the tests simulate user interface actions."
+__________________________________________________________________________________________________________________
+
+ATF tests can be run in two different ways: Run test or Debug test. Run test runs the test as normal.
+Debug test pauses the test at each breakpoint. Breakpoints can be inserted in a test to indicate 
+where the test should pause before continuing. This pause provides an opportunity to examine the test in progress 
+and troubleshoot why it is failing. A breakpoint can be added at any test step along the way.
+__________________________________________________________________________________________________________________
+
+Run Test will ignore breakpoints 
+
+Once a broken test is fixed, it is not necessary to remove the breakpoints. 
+Using Run test will ignore all breakpoints and run the test normally.
+
+However, if you would like to remove a breakpoint, right click on the step that has the breakpoint 
+and select Add/Remove Breakpoint. The breakpoint will be removed.
+___________________________________________________________________________________________________________________
+
+Once debugged test, Don’t have to worry about removing all of the breakpoints. 
+simply use Run test instead of Debug test. That way, the test ignores all breakpoints and runs normally.
+____________________________________________________________________________________________________________________
+
+Change the pause duration
+
+The test will remain paused for 10 minutes by default and then automatically continue with the rollback.
+The duration of the rollback pause can be overwritten using: sn_atf.breakpoint.timeout. 
+_____________________________________________________________________________________________________________________
+
+Debug test additional points
+
+-->All test types are supported, including individual tests, test suites, and parameterized tests.
+   All step types are also supported by this feature, including server-side and client UI.
+
+-->Breakpoints are not shared. They are tied to each specific user. 
+   If two users are debugging the same test, each user has their own set of breakpoints.
+   The users will not affect or interfere with each other as they place breakpoints or run their test in Debug test mode.
+
+-->Scheduled tests will always run in Run test mode, not Debug test mode.
+
+-->The Debug test feature is available out-of-the-box beginning with the San Diego release.
+   No special configurations are required.
+   Users include: atf_test_admin and atf_test_designer.
+
+-->The test will pause for 10 minutes before continuing with the rollback. 
+   The duration of the rollback pause can be overwritten using: sn_atf.breakpoint.timeout. 
+________________________________________________________________________________________________________________________
+
+Test runner vs. cloud runner
+
+When running a test using Test Runner, the client browser window needs to remain open and visible while the test is running.
+This is because the test is running locally on your system. That means someone has to be present to monitor the test, 
+keep the browser window open, and make sure the machine does not fall asleep. 
+This does not allow you to work on something else on that machine while the test is running. But...
+
+Beginning in Tokyo, there is a new option for running tests: Cloud Runner.
+
+Discovere the ServiceNow Store app called: ATF Test Generator and Cloud Runner. When tests are run using Cloud Runner,
+they run in ServiceNow's cloud server infrastructure instead of local machine. This frees up to work on other things 
+while the tests are running!
+__________________________________________________________________________________________________________________________
+
+Parallel tests
+
+Cloud Runner has two free parallel test executions. This means, if it has a test suite that contains 50 tests,
+two of the 50 tests would run at the same time. Once those 2 tests are finished, two more would run, and so on.  
+
+If more parallel tests are desired, customers can choose to pay for up to 7 concurrent tests for even faster results.
+__________________________________________________________________________________________________________________________
+
+
+
