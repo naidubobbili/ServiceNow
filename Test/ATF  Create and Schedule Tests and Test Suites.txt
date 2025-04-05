@@ -1,0 +1,290 @@
+Quick start tests:
+
+Represent a small set of critical use cases 
+
+Install easily with the demo data of a ServiceNow application
+
+Can be used as templates to build and customize test and test suites matching your unique processes
+
+Run against your instance specific data once copied and customized
+
+Annotate your copied version of the test if ServiceNow ever changes the original
+___________________________________________________________________________________________________________________
+
+quick start tests are inactive, read-only templates. 
+They only produce a successful test result when run with the demo data provided by their corresponding ServiceNow 
+application or feature plugin. To allow quick start tests to run successfully against your instance data, 
+you must first create a copy of the quick start test. 
+Once the test is copied, you can apply any desired changes and run the test. 
+___________________________________________________________________________________________________________________
+
+1.Open the test
+
+2.Set the current application scope
+
+3.Copy the existing test
+
+4.Apply any required changes
+
+5.Save the test
+___________________________________________________________________________________________________________________
+
+Create a User:
+1. Dynamically creates a new user
+2. Assigns the specified roles
+3. Impersonates the new user during the execution of the test steps. 
+Once the test completes, the new user is removed and the data is rolled back.
+
+Impersonate a User:
+This relies on a pre-existing user.
+1. Selects the user
+2. Assigns the specified roles
+3. Impersonates the user during the execution of the test steps
+Once the test is complete, the user is un-impersonated and the data is rolled back.
+
+Create a User test step configuration should be used rather than the Impersonate test step configuration 
+when impersonating a user. Create a User dynamically adds a user based on specified roles and groups, 
+and then can optionally impersonate the added user. After running the test, the user added will be deleted 
+automatically during the rollback. This helps the test remain self-contained.
+
+Since it is important to learn how to use both Create a User and Impersonate
+__________________________________________________________________________________________________________________
+
+The test step configuration categories delivered by ServiceNow.
+
+Application Navigator
+---------------------
+Test step configurations delivered in the Application Navigator category provide a role-based access verification
+of menus and modules in the application navigator.
+
+Run environment: User interface
+
+Custom UI
+---------
+Test step configurations delivered in the Custom UI category validate the behavior of page components 
+on custom user interfaces, such as dialogs created with UI Pages. Custom UI test step configurations support 
+customizable areas of the Now Platform outside the boundaries of other delivered user interface 
+test step configurations.
+
+NOTE: Introduced in the Rome release, you can display UI16 navigation in a test frame through a new input variable
+found on the test step form which allows you to choose UI15/UI16.
+
+Run environment: User interface
+
+Email
+-----
+Test step configurations delivered in the Email category validate the functionality of email notifications, 
+outbound email flows, and inbound email responses.
+
+Run environment: Server
+Release introduced: Orlando
+
+Form
+----
+Test step configurations delivered in the Form category validate the functionality of fields and
+user interface actions on a form.
+
+Run environment: User interface
+
+Forms in Service Portal
+–----------------------
+Test step configurations delivered in the Forms in Service Portal category validate the functionality of fields 
+and user interface actions in Service Portal form widgets.
+They require knowledge of Service Portal forms and data structures.
+
+Run environment: User interface
+
+List and Related List
+–--------------------
+Test step configurations delivered in the List and Related List category validate the functionality 
+and visibility of records and UI actions in lists and related lists.
+
+Run environment: User interface
+Release introduced: Orlando
+
+Reporting
+–--------
+Test step configurations delivered in the Reporting category confirm a report can or cannot be viewed 
+by the test user.
+
+Run environment: Server
+Release introduced: Orlando
+
+Responsive Dashboards
+–--------------------
+Test step configurations delivered in the Responsive Dashboards category confirm a dashboard is visible or 
+can be shared by the test user.
+
+Run environment: Server
+Release introduced: Orlando
+
+REST
+–---
+Test step configurations delivered in the REST category verify the functionality of inbound REST calls. 
+Outbound REST calls and other web service integrations can be implemented using scripting in Run Server Side 
+Script test steps or by creating custom test step configurations. 
+
+When testing outbound web service integrations, be aware of the impact those web service calls 
+will have on the external system. For example, if you are testing an integration that sends incidents from 
+ServiceNow to another system, ensure it is safe to create those incidents in the external system every time 
+the ATF tests are run. Both the ServiceNow and the external system should be non-production instances.
+
+Run environment: Server
+
+Server
+–-----
+Test step configurations delivered in the Server category perform server-side operations, such as query a record, 
+update a record, impersonate a user, or run a server-side script.
+
+Run environment: Server
+
+Service Catalog
+–--------------
+Test step configurations delivered in the Service Catalog category validate single catalog item transactions 
+as well as requester and fulfiller flows in Service Catalog.
+
+Run environment: User interface
+
+Service Catalog in Service Portal
+–--------------------------------
+Test step configurations delivered in the Service Catalog in Service Portal category validate catalog item 
+transactions and requester flows from Service Portal. They require knowledge of Service Portal forms and 
+data structures.
+
+Run environment: User interface
+_____________________________________________________________________________________________________________________
+
+To identify the output variables of a test step configuration, she opens 
+"Automated Test Framework > Administration > Step Configurations", and then selects the test step configuration. 
+Its output variables are shown in the Output Variables related list at the bottom of the Test Step Configuration 
+form. 
+____________________________________________________________________________________________________________________
+
+If a test does not impersonate a user, it is executed as the current logged in user running the test. 
+Do not attempt to impersonate manually before running a test or test suite. 
+
+Impersonation applies to all subsequent client-side and server-side test steps until the impersonate is switched 
+or the test ends. If a test is cancelled before it completes, the last impersonation performed will unimpersonate.
+If the browser is abruptly closed before a test completes, the user will not be unimpersonated.
+__________________________________________________________________________________________________________________
+
+When Impersonating an existing user, be aware of potential impacts:
+
+If the User is changed, it could affect the test.
+If the test refers to User IDs or groups that are different in the different instances (dev, test, prod),
+the test will break.
+
+Even if the instance has the same User ID and Groups, it might not have the same Sys IDs for the records, 
+depending on how the instances were created or maintained. This would cause the test to fail 
+since they would be considered different records. 
+
+Create a User is the preferred option because, unlike Impersonating an existing user, there is no risk 
+during system test, UAT, or production move of things breaking due to mismatched User IDs and Group sys IDs.
+__________________________________________________________________________________________________________________
+
+Consider ACL security
+
+When debugging unexpected test errors, one of the common mistakes uncovered often relates to security authorization.
+Based on the roles of the impersonated user, a test step might fail. By default, ACL security is enforced on 
+Record Insert, Record Update, Record Query, and Record Delete Test Steps using the Enforce security field. 
+
+Sometimes "Enforce security" might need to be disabled for test steps performing actions that set up the test. 
+Other test steps actually performing the verification would require it to be enabled.
+__________________________________________________________________________________________________________________
+
+Prepare for parallel testing
+
+Tests should be designed with parallel execution in mind. They should not rely on existing data. 
+Instead, the test should create the necessary data required as part of its setup.
+__________________________________________________________________________________________________________________
+
+Know the limitations
+
+The ServiceNow navigation bar and banner are not visible to client test runners, 
+so they cannot be accessed in a test.
+__________________________________________________________________________________________________________________
+
+Set the Locale code
+
+set the Locale code in your instance so USD currency values match expected test results.
+
+1.In the header, set the application scope to Global. 
+
+2.Navigate to System Properties > System Localization.
+
+3.Update the Locale code to en.US.
+
+4.Select Save.
+___________________________________________________________________________________________________________________
+
+A test suite is a grouping of related tests and other test suites to verify some functionality or feature. 
+By grouping related tests together, all of them can be run easily with a single click. 
+___________________________________________________________________________________________________________________
+
+NOTE: If there were tests already assigned to the test suite,
+they will be removed once the dynamic filter is saved. However, it is possible to add tests manually 
+that do not match the filter condition after the dynamic filter is applied.
+
+When tests are added to a test suite dynamically they will completely replace any tests already assigned. 
+However, additional tests can be added manually AFTER the dynamic tests are added.
+___________________________________________________________________________________________________________________
+
+Execution order
+---------------
+Enter a value to determine the order the test should execute within the test suite. 
+To save the value, select the green check mark. 
+By default, test are run within a test suite based on the order they were added. 
+
+Abort on failure
+–---------------
+When a test within a test suite fails, Test Designers can specify if the remaining tests should continue 
+or if the test suite should abort. This is defined by setting the Abort on failure for a test 
+within the test suite. 
+
+Since tests run isolated from each other, the Abort on failure setting is typically left to its default value: 
+false. This means if the test fails, the test and test suite will be reported as failed. 
+However, the remaining tests within the test suite will still be executed.
+____________________________________________________________________________________________________________________
+
+Only test suites can be scheduled. Individual tests are only run on-demand. 
+Automated Test Framework > Schedules, and then selects New to create an execution schedule.
+
+The same test suite can exist in more than one schedule.
+
+The same test suite can be added to the same schedule more than once.
+This flexibility allows scheduling test suites to run across different browsers and operating systems.
+
+On-demand scheduled Run frequency will not perform Conditional scripts.
+___________________________________________________________________________________________________________________
+
+NOTE: Scheduled client test runners are different than typical client test runners.
+
+why scheduled client test runners are different from other client test runners.
+
+Pre-Rome Release
+----------------
+Customers had to point active browser windows on laptops at Scheduled Client Test Runner or 
+their ATF Test Suites would fail, whether for pipeline-triggered or manually-triggered runs. 
+
+Post-Rome ATF Feature
+---------------------
+When ATF Test Suites are run without an existing Scheduled Client Test Runner, 
+ServiceNow spins up Scheduled Client Test Runners so customers’ tests don’t fail.
+
+Automated Test Framework > Run > Active Scheduled Test Runners
+
+As of the Rome release, ServiceNow automatically spins up Scheduled Client Test Runners when necessary.
+
+You can review the current queue of waiting and running test suites for a scheduled client test runner using 
+"Automated Test Framework > Run > Waiting/Running Suite Runs."
+_________________________________________________________________________________________________________________________
+
+Launch the scheduled client test runner
+
+Hold the computer SHIFT key down while you select Automated Test Framework > Run > Scheduled Client Test Runner.
+This will launch a new scheduled client test runner in a separate browser window.
+
+now have an active scheduled client test runner based on the browser and OS configuration of where it was 
+initiated. Keep the new browser window for the scheduled client test runner open and 
+return to the original ServiceNow browser window to continue the activity.
+____________________________________________________________________________________________________________________
